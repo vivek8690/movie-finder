@@ -1,0 +1,25 @@
+{
+  "name": "giveindia",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "nodemon ./server.js",
+    "pretest": "eslint --ignore-path .gitignore .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.6.0",
+    "eslint-config-strongloop": "^2.1.0",
+    "nodemon": "^2.0.4",
+    "run-rs": "^0.6.2"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "mongoose": "^5.9.27",
+    "morgan": "^1.10.0"
+  }
+}
