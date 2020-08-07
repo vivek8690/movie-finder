@@ -18,17 +18,17 @@
 							"urlencoded": [
 								{
 									"key": "accountType",
-									"value": "savings",
+									"value": "current",
 									"type": "text"
 								},
 								{
 									"key": "customerName",
-									"value": "manoj1",
+									"value": "vivek",
 									"type": "text"
 								},
 								{
 									"key": "balance",
-									"value": "40000",
+									"value": "4000",
 									"type": "text"
 								}
 							]
@@ -96,12 +96,12 @@
 							"urlencoded": [
 								{
 									"key": "fromAccountId",
-									"value": "5f2d50a7e65827740fd110a5",
+									"value": "5f2d89beb54e6f8ecfb37f84",
 									"type": "text"
 								},
 								{
 									"key": "toAccountId",
-									"value": "5f2d4fe8e65827740fd1109f",
+									"value": "5f2d89cfb54e6f8ecfb37f85",
 									"type": "text"
 								},
 								{
@@ -129,7 +129,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": ""
+							"raw": "{{url}}/transactions/5f2d89beb54e6f8ecfb37f84",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"transactions",
+								"5f2d89beb54e6f8ecfb37f84"
+							]
 						},
 						"description": "Transactions list in which this accountID is involved"
 					},
