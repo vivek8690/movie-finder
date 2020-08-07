@@ -1,0 +1,12 @@
+FROM node:latest
+
+# set working directory
+RUN mkdir /usr/src/app
+
+WORKDIR /usr/src/
+# RUN rm -r node_modules && rm package-lock.json
+ENV PATH /usr/src/node_modules/.bin:$PATH
+
+RUN npm install run-rs -g
+
+CMD ["run-rs" "-l" "ubuntu1804"]

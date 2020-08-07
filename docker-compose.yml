@@ -1,6 +1,11 @@
 version: '2.1'
 
 services:
+  mongo-replica:
+    container_name: mongo-replica
+    build: ./mongo-Dockerfile
+    volumes:
+      - '.:/data/db'
   account-service:
     container_name: account-service
     build: .
@@ -11,3 +16,8 @@ services:
     environment:
       - DATABASE_URL='mongodb://localhost:27017,localhost:27018,localhost:27019/banking'
       - NODE_ENV=development
+    depends_on:
+      mongo-replica:
+        condition: service_healthy
+    links:
+      - mongo-replica
