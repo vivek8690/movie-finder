@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const Transaction = require('../models/transaction');
 const Account = require('../models/account');
 const { ErrorHandler } = require('../helpers/custom-error');
+const { TRANSACTION } = require('../constants/transaction');
 
 // create transaction between two accounts
 exports.create = async (req, res, next) => {
@@ -23,12 +24,12 @@ exports.create = async (req, res, next) => {
             if (sender.customerName === reciever.customerName
                 || sender._id === reciever._id) {
                 throw new ErrorHandler(400,
-                    'you can\'t transfer between accounts owned by you');
+                    TRANSACTION.SAME_ACCOUNT);
             }
             sender.balance = sender.balance - amount;
             // insufficient fund
             if (sender.balance < 0) {
-                throw new ErrorHandler(400, 'you don\'t have sufficient fund');
+                throw new ErrorHandler(400, TRANSACTION.INSUFFICIENT_FUND);
             }
             await sender.save();
             reciever.balance = reciever.balance + amount;
@@ -36,13 +37,13 @@ exports.create = async (req, res, next) => {
             // basic saving account balance limit
             if (reciever.accountType === 'basicsavings'
                 && reciever.balance > 50000) {
-                throw new ErrorHandler(400, 'basic savings can have max 50,000');
+                throw new ErrorHandler(400, TRANSACTION.BASIC_LIMIT);
             }
             await reciever.save();
             isCompleted = true;
             await session.commitTransaction();
         } else {
-            throw new ErrorHandler(400, 'Invalid transaction');
+            throw new ErrorHandler(400, TRANSACTION.INVALID_TRANSACTION);
         }
         return res.status(200).json({
             data: {
@@ -66,9 +67,9 @@ exports.getTransactionsByAccount = async (req, res, next) => {
     try {
         const { accountId } = req.params;
         const transactions = await Transaction.find({ $or: [{ fromAccountId: accountId }, { toAccountId: accountId }] });
-        return res.status(200).json({ message: 'transactions of this account', data: transactions });
+        return res.status(200).json({ message: TRANSACTION.ACCOUNT_TRANSACTIONS, data: transactions });
     } catch (err) {
-        throw new ErrorHandler(400, 'Something went wrong');
+        next(err);
     }
 
 };

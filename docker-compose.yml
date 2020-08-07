@@ -1,0 +1,13 @@
+version: '2.1'
+
+services:
+  account-service:
+    container_name: account-service
+    build: .
+    volumes:
+      - '.:/usr/src/app'
+    ports:
+      - '3000:3000'
+    environment:
+      - DATABASE_URL='mongodb://localhost:27017,localhost:27018,localhost:27019/banking'
+      - NODE_ENV=development
