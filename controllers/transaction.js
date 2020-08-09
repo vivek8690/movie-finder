@@ -9,20 +9,22 @@ const { TRANSACTION } = require('../constants/transaction');
 // create transaction between two accounts
 exports.create = async (req, res, next) => {
     let isCompleted = false;
-    let trancsaction;
+    let senderTotal, receiverTotal, sender, receiver, transaction;
     const session = await mongoose.startSession();
     session.startTransaction();
     try {
-        trancsaction = new Transaction(req.body);
+        transaction = new Transaction(req.body);
         let { fromAccountId, toAccountId, amount } = req.body;
         amount = Number(amount);
-        const sender = await Account.findById(fromAccountId).session(session);
-        const reciever = await Account.findById(toAccountId).session(session);
+        [sender, receiver] = await Promise.all([
+            Account.findById(fromAccountId).session(session),
+            Account.findById(toAccountId).session(session),
+        ]);
 
-        if (sender && reciever && amount > 0) {
+        if (sender && receiver && amount > 0) {
             // same owner's account transfer is not allowed
-            if (sender.customerName === reciever.customerName
-                || sender._id === reciever._id) {
+            if (sender.customerName === receiver.customerName
+                || sender._id === receiver._id) {
                 throw new ErrorHandler(400,
                     TRANSACTION.SAME_ACCOUNT);
             }
@@ -32,34 +34,38 @@ exports.create = async (req, res, next) => {
                 throw new ErrorHandler(400, TRANSACTION.INSUFFICIENT_FUND);
             }
             await sender.save();
-            reciever.balance = reciever.balance + amount;
+            receiver.balance = receiver.balance + amount;
 
             // basic saving account balance limit
-            if (reciever.accountType === 'basicsavings'
-                && reciever.balance > 50000) {
+            if (receiver.accountType === 'basicsavings'
+                && receiver.balance > 50000) {
                 throw new ErrorHandler(400, TRANSACTION.BASIC_LIMIT);
             }
-            await reciever.save();
+            await receiver.save();
             isCompleted = true;
             await session.commitTransaction();
+            [senderTotal, receiverTotal] = await Promise.all([
+                getTotalbalances(sender.customerName),
+                getTotalbalances(receiver.customerName),
+            ]);
         } else {
             throw new ErrorHandler(400, TRANSACTION.INVALID_TRANSACTION);
         }
-        return res.status(200).json({
-            data: {
-                newSrcBalance: `${sender.customerName} = ${sender.balance}`,
-                totalDestBalance: `${reciever.customerName} = ${reciever.balance}`,
-                transferedAt: new Date().toString(),
-            },
-        });
     } catch (err) {
         await session.abortTransaction();
         next(err);
     } finally {
-        trancsaction.isCompleted = isCompleted;
-        trancsaction.save();
+        transaction.isCompleted = isCompleted;
+        transaction.save();
         session.endSession();
     }
+    return res.status(200).json({
+        data: {
+            newSrcBalance: `Total balance of all accounts ${sender.customerName} = ${senderTotal[0].total}`,
+            totalDestBalance: `Total balance of all accounts ${receiver.customerName} = ${receiverTotal[0].total}`,
+            transferedAt: new Date().toString(),
+        },
+    });
 };
 
 
@@ -72,4 +78,15 @@ exports.getTransactionsByAccount = async (req, res, next) => {
         next(err);
     }
 
+};
+
+// calculate total balance in all account
+const getTotalbalances = (customerName) => {
+    return Account.aggregate().match({ customerName })
+        .project({ customerName: 1, balance: { $divide: ['$balance', 100] } }).group({
+            _id: '$customerName',
+            total: {
+                $sum: '$balance',
+            },
+        });
 };
