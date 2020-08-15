@@ -4,8 +4,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
-const accountRouter = require('../routes/account');
-const transactionRouter = require('../routes/transaction');
+const movieRouter = require('../routes/movie');
+const genreRouter = require('../routes/genre');
 const { handleError, ErrorHandler } = require('../helpers/custom-error');
 
 const app = express();
@@ -27,8 +27,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 
-app.use('/accounts', accountRouter);
-app.use('/transactions', transactionRouter);
+app.use('/api/movies', movieRouter);
+app.use('/api/genres', genreRouter);
 
 app.use((req, res, next) => {
     const err = new ErrorHandler(401, `${req.url} route not found`);
