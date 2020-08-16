@@ -4,7 +4,8 @@
 const mongoose = require('mongoose');
 const { init } = require('../helpers/data-feed');
 
-const DB_URL = process.env.DATABASE_URL || 'mongodb+srv://vivek123:vivek123456@cluster0.7oiq4.mongodb.net/movies-listing?authSource=admin&replicaSet=atlas-8lvchi-shard-0&w=majority&readPreference=primary&appname=MongoDB%20Compass&retryWrites=true&ssl=true';
+// pass databse connection URI here
+const DB_URL = process.env.DATABASE_URL;
 
 mongoose.connect(DB_URL, { useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true });
 
