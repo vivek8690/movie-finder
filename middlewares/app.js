@@ -3,6 +3,7 @@ const logger = require('morgan');
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const path = require('path');
 
 const movieRouter = require('../routes/movie');
 const genreRouter = require('../routes/genre');
@@ -22,6 +23,11 @@ app.use((req, res, next) => {
 if (process.env.NODE_ENV !== 'test') {
     app.use(logger('dev'));
 }
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.get('/', function(req, res) {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
