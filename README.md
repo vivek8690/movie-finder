@@ -11,6 +11,7 @@
  clone repository locally and run 
 
 ```bash
+cd movie-finder
 npm install && npm start
 ```
 
