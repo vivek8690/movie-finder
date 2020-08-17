@@ -1,0 +1,11 @@
+version: '2.1'
+services: 
+  movie-service:
+    container_name: movie-service
+    build: .
+    volumes:
+      - '.:/usr/src/app'
+    ports:
+      - '3000:3000'
+    environment:
+      - DATABASE_URL=<URL>

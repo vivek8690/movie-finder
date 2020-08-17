@@ -1,9 +1,10 @@
 {
-  "name": "giveindia",
+  "name": "movie-finder",
   "version": "1.0.0",
   "description": "",
   "scripts": {
     "start": "node server.js",
+    "dev": "node ./app/server.js",
     "deploy": "git push heroku master",
     "pretest": "eslint --ignore-path .gitignore .",
     "test": "echo \"Error: no test specified\" && exit 1"
