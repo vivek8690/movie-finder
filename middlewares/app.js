@@ -23,7 +23,7 @@ app.use((req, res, next) => {
 if (process.env.NODE_ENV !== 'test') {
     app.use(logger('dev'));
 }
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(process.cwd(), 'public')));
 
 app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
