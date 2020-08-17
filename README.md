@@ -30,3 +30,6 @@ docker-compose up
 - we can use application load balancers to handle large amount of requests and that will route requests to different EC2 in auto scaling(up/down) group we can set cloudwatch alarms and use AMI for that, we can also use two load balancers and route them from DNS so that we don't have single point of failure.
 - For initially we can go serverless (AWS lambda) so we don't need to manage servers for that.
 - For efficinet search functionality we can use Elastic search, we can use that So we can use utilize autocomplete functionality and improve search.
+
+## Contributing
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
