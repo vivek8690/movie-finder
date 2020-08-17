@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "start": "node server.js",
-    "dev": "node ./app/server.js",
+    "dev": "nodemon ./app/server.js",
     "deploy": "git push heroku master",
     "pretest": "eslint --ignore-path .gitignore .",
     "test": "echo \"Error: no test specified\" && exit 1"
