@@ -34,11 +34,14 @@ exports.getMovie = async (req, res, next) => {
 exports.updateMovie = async (req, res, next) => {
     let { movieId } = req.params;
     try {
-        const movie = await Movie.findByIdAndUpdate({ _id: movieId }, req.body, { new: true });
+        const movie = await Movie.findById(movieId);
         if (movie == null) {
-            console.log('in error handler');
             throw new ErrorHandler(400, MOVIES.NOT_EXIST);
         }
+        Object.keys(req.body).map((key) => {
+            movie[key] = req.body[key];
+        });
+        await movie.save();
         res.status(200).json({ message: MOVIES.UPDATED, data: movie });
     } catch (err) {
         next(err);

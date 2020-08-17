@@ -5,18 +5,6 @@ const Genre = require('../models/genre');
 
 const { Schema } = mongoose;
 
-const setGenre = (genre) => {
-    genre.forEach(async(name) => {
-        try {
-            const options = { upsert: true };
-            name ? await Genre.findOneAndUpdate({ type: name }, { type: name }, options) : '';
-        } catch (err) {
-            console.log('already exist');
-        }
-    });
-    return genre;
-};
-
 const MovieSchema = new Schema({
     name: {
         type: String,
@@ -34,12 +22,38 @@ const MovieSchema = new Schema({
     genre: {
         type: [{ type: String, trim: true }],
         required: 'Genre is required field',
-        set: setGenre,
     },
     imdb_score: {
         type: Number,
         required: 'IMDB score is required field',
     },
 }, { timestamps: true });
+
+MovieSchema.pre('save', function(next) {
+    console.log('pre save hook', this.genre);
+    this.genre.map(async(name) => {
+        try {
+            const options = { upsert: true };
+            await Genre.findOneAndUpdate({ type: name }, { type: name }, options);
+        } catch (err) {
+            console.log('something wrong');
+        }
+    });
+    next();
+});
+
+MovieSchema.pre('insertMany', function(next, docs) {
+    docs.forEach(async(doc) => {
+        doc.genre.map(async(name) => {
+            try {
+                const options = { upsert: true };
+                await Genre.findOneAndUpdate({ type: name }, { type: name }, options);
+            } catch (err) {
+                console.log('already exist');
+            }
+        });
+    });
+    next();
+});
 
 module.exports = mongoose.model('Movie', MovieSchema);
