@@ -14,6 +14,13 @@
 cd movie-finder
 npm install && npm start
 ```
+## Development
+
+Enter Mongodb connection string in docker-compose.yml and run following commands
+```
+cd movie-finder
+docker-compose up
+```
 
 ## Scalling up
 
