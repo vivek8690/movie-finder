@@ -33,3 +33,28 @@ docker-compose up
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+## Frontend
+
+The frontend is a Next.js application located in the `frontend` directory.
+
+### Running the Frontend
+
+To run the frontend application locally, follow these steps:
+
+1.  Navigate to the frontend directory:
+    ```bash
+    cd frontend
+    ```
+2.  Install dependencies:
+    ```bash
+    npm install
+    ```
+3.  Start the development server:
+    ```bash
+    npm run dev
+    ```
+
+The frontend application will typically start on `http://localhost:3000`.
+
+**Note**: The frontend application expects the backend server to be running. The backend is configured to run on port 8080 as per the `docker-compose.yml` file and is proxied by the Next.js development server for API requests. Ensure the backend is started before running the frontend.
